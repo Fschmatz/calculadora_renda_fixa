@@ -1,4 +1,5 @@
 import 'package:calculadora_renda_fixa/pages/configs/pg_configs.dart';
+import 'package:calculadora_renda_fixa/pages/util/calc_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -30,42 +31,44 @@ class _HomeState extends State<Home> {
 
   void calcularResultado(){
 
-    int valorInicial = 1000;
-    int valorFinal = 2000;
-    int prazo = 60;
-    int di = 60;
+    double valorInicial = double.parse(valor.text);
+   // double valorFinal = double.parse(valor.text) * 2;
+    double periodoInv = double.parse(periodo.text);
+    /*double di =  double.parse(taxaDi.text);
+    double selic =  double.parse(taxaSelic.text);
+    double porcCDB =  double.parse(cdb.text);
+    double porcLc =  double.parse(lciLca.text);*/
+    double impRenda = 0;
     bool ir = true;
 
+    if (periodoInv < 6) {
+      impRenda = 22.5;
+    } else if (periodoInv < 12) {
+      impRenda = 20;
+    } else if (periodoInv < 24) {
+      impRenda = 17.5;
+    } else {
+      impRenda = 15;
+    }
 
-    _resultado = "Jacaré \n Jaré";
+
+    _resultado += "Poupança: "+calcularPoupanca(valorInicial,periodoInv).toStringAsFixed(2)+"\n";
+    //_resultado += "LCI / LCA: "+calcularLci(valorInicial,periodoInv).toStringAsFixed(2)+"\n";
+
     setState(() {
       _resultado;
     });
   }
+
+
 /*calcularImpostoRenda(){
-    var faixaIr = 0;
 
-
-    if (periodo < 6) {
-      faixaIr = 22.5;
-    } else if (periodo < 12) {
-      faixaIr = 20;
-    } else if (periodo < 24) {
-      faixaIr = 17.5;
-    } else {
-      faixaIr = 15;
-    }
+    double impRenda = 0;
 
     var valorFinal = valorInicial + (valorFinal - valorInicial) / (1 - (faixaIr / 100));
   }*/
 
 
-
-
-
-
-  //https://rendafixa.herokuapp.com/
-  //https://github.com/marcelorodrigo/rendafixa/blob/master/public/js/calculadora-rentabilidade.js
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,6 +97,11 @@ class _HomeState extends State<Home> {
               height: 10,
             ),
             TextField(
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(
+                    RegExp(r'^(\d+)?\.?\d{0,2}'))
+              ],
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
               minLines: 1,
               maxLines: 1,
               maxLength: 10,
@@ -113,6 +121,11 @@ class _HomeState extends State<Home> {
               height: txtFieldSpacing,
             ),
             TextField(
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(
+                    RegExp(r'^(\d+)?\.?\d{0,2}'))
+              ],
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
               minLines: 1,
               maxLines: 1,
               maxLength: 10,
@@ -131,81 +144,120 @@ class _HomeState extends State<Home> {
             SizedBox(
               height: txtFieldSpacing,
             ),
-            TextField(
-              minLines: 1,
-              maxLines: 1,
-              maxLength: 10,
-              maxLengthEnforcement: MaxLengthEnforcement.enforced,
-              controller: taxaDi,
-              decoration: const InputDecoration(
-                labelText: "Taxa DI - % ao Ano",
-                counterText: "",
-              ),
-              textAlign: TextAlign.end,
-              style: const TextStyle(
-                fontSize: 16,
-              ),
-              onEditingComplete: () => {},
+            Row(
+              children: [
+                Flexible(
+                  child: TextField(
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.allow(
+                          RegExp(r'^(\d+)?\.?\d{0,2}'))
+                    ],
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    minLines: 1,
+                    maxLines: 1,
+                    maxLength: 10,
+                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                    controller: taxaDi,
+                    decoration: const InputDecoration(
+                      labelText: "Taxa DI - % ao Ano",
+                      counterText: "",
+                    ),
+                    textAlign: TextAlign.end,
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                    onEditingComplete: () => {},
+                  ),
+                ),
+                SizedBox(
+                  width: txtFieldSpacing,
+                ),
+                Flexible(
+                  child: TextField(
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.allow(
+                          RegExp(r'^(\d+)?\.?\d{0,2}'))
+                    ],
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    minLines: 1,
+                    maxLines: 1,
+                    maxLength: 10,
+                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                    controller: taxaSelic,
+                    decoration: const InputDecoration(
+                      labelText: "Taxa Selic - % ao Ano",
+                      counterText: "",
+                    ),
+                    textAlign: TextAlign.end,
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                    onEditingComplete: () => {},
+                  ),
+                ),
+              ],
             ),
+           
             SizedBox(
               height: txtFieldSpacing,
             ),
-            TextField(
-              minLines: 1,
-              maxLines: 1,
-              maxLength: 10,
-              maxLengthEnforcement: MaxLengthEnforcement.enforced,
-              controller: taxaSelic,
-              decoration: const InputDecoration(
-                labelText: "Taxa Selic - % ao Ano",
-                counterText: "",
-              ),
-              textAlign: TextAlign.end,
-              style: const TextStyle(
-                fontSize: 16,
-              ),
-              onEditingComplete: () => {},
+            Row(
+              children: [
+                Flexible(
+                  child: TextField(
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.allow(
+                          RegExp(r'^(\d+)?\.?\d{0,2}'))
+                    ],
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    minLines: 1,
+                    maxLines: 1,
+                    maxLength: 10,
+                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                    controller: cdb,
+                    decoration: const InputDecoration(
+                      labelText: "% CDB / LC",
+                      counterText: "",
+                    ),
+                    textAlign: TextAlign.end,
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                    onEditingComplete: () => {},
+                  ),
+                ),
+                SizedBox(
+                  width: txtFieldSpacing,
+                ),
+                Flexible(
+                  child: TextField(
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.allow(
+                          RegExp(r'^(\d+)?\.?\d{0,2}'))
+                    ],
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    minLines: 1,
+                    maxLines: 1,
+                    maxLength: 10,
+                    maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                    controller: lciLca,
+                    decoration: const InputDecoration(
+                      labelText: "% LCI / LCA",
+                      counterText: "",
+                    ),
+                    textAlign: TextAlign.end,
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                    onEditingComplete: () => {},
+                  ),
+                ),
+              ],
             ),
-            SizedBox(
-              height: txtFieldSpacing,
-            ),
-            TextField(
-              minLines: 1,
-              maxLines: 1,
-              maxLength: 10,
-              maxLengthEnforcement: MaxLengthEnforcement.enforced,
-              controller: cdb,
-              decoration: const InputDecoration(
-                labelText: "% CDB / LC",
-                counterText: "",
-              ),
-              textAlign: TextAlign.end,
-              style: const TextStyle(
-                fontSize: 16,
-              ),
-              onEditingComplete: () => {},
-            ),
-            SizedBox(
-              height: txtFieldSpacing,
-            ),
-            TextField(
-              minLines: 1,
-              maxLines: 1,
-              maxLength: 10,
-              maxLengthEnforcement: MaxLengthEnforcement.enforced,
-              controller: lciLca,
-              decoration: const InputDecoration(
-                labelText: "% LCI / LCA",
-                counterText: "",
-              ),
-              textAlign: TextAlign.end,
-              style: const TextStyle(
-                fontSize: 16,
-              ),
-              onEditingComplete: () => {},
-            ),
+
+
             const SizedBox(
-              height: 30,
+              height: 40,
             ),
             Center(
               child: SizedBox(

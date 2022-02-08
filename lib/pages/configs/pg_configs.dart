@@ -31,7 +31,7 @@ class _PgConfigsState extends State<PgConfigs> {
   }
 
   _launchGithub() {
-    const url = '';
+    const url = 'https://github.com/Fschmatz/calculadora_renda_fixa';
     launch(url);
   }
 
@@ -64,7 +64,7 @@ class _PgConfigsState extends State<PgConfigs> {
               leading: const SizedBox(
                 height: 0.1,
               ),
-              title: Text("Links".toUpperCase(),
+              title: Text("Código Fonte".toUpperCase(),
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
@@ -76,7 +76,7 @@ class _PgConfigsState extends State<PgConfigs> {
                 _launchGithub();
               },
               leading: const Icon(Icons.open_in_new_outlined),
-              title: const Text("View Source Code on GitHub",
+              title: const Text("Ver no Github",
                   style: TextStyle(
                       decoration: TextDecoration.underline,
                       color: Colors.blue)),
