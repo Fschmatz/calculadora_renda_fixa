@@ -1,9 +1,13 @@
 class Changelog{
 
-  static String appVersion = "1.0.0";
+  static String appVersion = "1.1.0";
   static String appName = "Calculadora Renda Fixa Fschmatz";
 
   static String changelogs = ''' 
+1.1.0
+- Mudanças na UI
+- Salvar valores
+
 1.0.0
 - Tecnicamente Utilizável
 - Add LCI/LCA

@@ -2,6 +2,8 @@ import 'package:calculadora_renda_fixa/pages/configs/pg_configs.dart';
 import 'package:calculadora_renda_fixa/pages/util/calc_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -13,9 +15,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   double txtFieldSpacing = 25;
   TextStyle labelStyle =
-      const TextStyle(fontSize: 16, fontWeight: FontWeight.w600);
-  TextStyle resultadoStyle =
-    const TextStyle(fontSize: 15, fontWeight: FontWeight.w600);
+  const TextStyle(fontSize: 16, fontWeight: FontWeight.w600);
+
   TextEditingController valor = TextEditingController();
   TextEditingController periodo = TextEditingController();
   TextEditingController taxaDi = TextEditingController();
@@ -26,15 +27,44 @@ class _HomeState extends State<Home> {
   String txtCDB = '';
   String txtLciLca = '';
   String impRendaString = '';
+  String valorDescCdb = '';
 
   @override
   void initState() {
-    valor.text = '10000';
-    periodo.text = '12';
-    taxaDi.text = '10.65';
-    cdb.text = '100';
-    lciLca.text = '100';
+    carregarValoresSalvos();
     super.initState();
+  }
+
+  void salvarValores() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('valor', valor.text);
+    await prefs.setString('periodo', periodo.text);
+    await prefs.setString('taxaDi', taxaDi.text);
+    await prefs.setString('cdb', cdb.text);
+    await prefs.setString('lciLca', lciLca.text);
+  }
+
+  Future<void> carregarValoresSalvos() async {
+    final prefs = await SharedPreferences.getInstance();
+    valor.text = prefs.getString('valor') ?? '';
+    periodo.text = prefs.getString('periodo') ?? '';
+    taxaDi.text = prefs.getString('taxaDi') ?? '';
+    cdb.text = prefs.getString('cdb') ?? '';
+    lciLca.text = prefs.getString('lciLca') ?? '';
+  }
+
+  bool checkErros() {
+    if (testValues(valor.text) && testValues(periodo.text) &&
+        testValues(taxaDi.text)  && testValues(cdb.text)  &&
+        testValues(lciLca.text)  ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  bool testValues(String v){
+    return v != '' && v != '0' ? true : false;
   }
 
   void calcularResultado() {
@@ -62,8 +92,11 @@ class _HomeState extends State<Home> {
     }
 
     txtPoupanca = calcularPoupanca(valorInicial, periodoInv).toStringAsFixed(2);
-    txtCDB = calcularCdb(valorInicial, periodoInv, porcDi, porcCDB, impRenda)
-        .toStringAsFixed(2);
+
+    List<dynamic> cdbCalc =
+    calcularCdb(valorInicial, periodoInv, porcDi, porcCDB, impRenda);
+    txtCDB = cdbCalc[0].toStringAsFixed(2);
+    valorDescCdb = cdbCalc[1].toStringAsFixed(2);
 
     txtLciLca = calcularLciLca(valorInicial, periodoInv, porcDi, porcLci)
         .toStringAsFixed(2);
@@ -73,6 +106,7 @@ class _HomeState extends State<Home> {
       txtCDB;
       txtLciLca;
       impRendaString;
+      valorDescCdb;
     });
   }
 
@@ -85,6 +119,14 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    TextStyle resultadoStyle = TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w600,
+        color: Theme
+            .of(context)
+            .colorScheme
+            .primary);
+
     return GestureDetector(
       onTap: () {
         loseFocus();
@@ -95,9 +137,11 @@ class _HomeState extends State<Home> {
             actions: [
               IconButton(
                   icon: const Icon(
-                    Icons.tune_outlined,
+                    Icons.save_outlined,
                   ),
-                  onPressed: () {}),
+                  onPressed: () {
+                    salvarValores();
+                  }),
               const SizedBox(
                 width: 8,
               ),
@@ -120,7 +164,7 @@ class _HomeState extends State<Home> {
             shrinkWrap: true,
             children: [
               const SizedBox(
-                height: 20,
+                height: 30,
               ),
               TextField(
                 inputFormatters: <TextInputFormatter>[
@@ -128,7 +172,7 @@ class _HomeState extends State<Home> {
                       RegExp(r'^(\d+)?\.?\d{0,2}'))
                 ],
                 keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
+                const TextInputType.numberWithOptions(decimal: true),
                 minLines: 1,
                 maxLines: 1,
                 maxLength: 10,
@@ -142,7 +186,7 @@ class _HomeState extends State<Home> {
                 style: const TextStyle(
                   fontSize: 16,
                 ),
-                onEditingComplete: () => {},
+                onEditingComplete: () => FocusScope.of(context).nextFocus(),
               ),
               SizedBox(
                 height: txtFieldSpacing,
@@ -156,7 +200,7 @@ class _HomeState extends State<Home> {
                             RegExp(r'^(\d+)?\.?\d{0,2}'))
                       ],
                       keyboardType:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      const TextInputType.numberWithOptions(decimal: true),
                       minLines: 1,
                       maxLines: 1,
                       maxLength: 10,
@@ -170,7 +214,7 @@ class _HomeState extends State<Home> {
                       style: const TextStyle(
                         fontSize: 16,
                       ),
-                      onEditingComplete: () => {},
+                      onEditingComplete: () => FocusScope.of(context).nextFocus(),
                     ),
                   ),
                   SizedBox(
@@ -183,7 +227,7 @@ class _HomeState extends State<Home> {
                             RegExp(r'^(\d+)?\.?\d{0,2}'))
                       ],
                       keyboardType:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      const TextInputType.numberWithOptions(decimal: true),
                       minLines: 1,
                       maxLines: 1,
                       maxLength: 10,
@@ -197,7 +241,7 @@ class _HomeState extends State<Home> {
                       style: const TextStyle(
                         fontSize: 16,
                       ),
-                      onEditingComplete: () => {},
+                      onEditingComplete: () => FocusScope.of(context).nextFocus(),
                     ),
                   ),
                 ],
@@ -214,7 +258,7 @@ class _HomeState extends State<Home> {
                             RegExp(r'^(\d+)?\.?\d{0,2}'))
                       ],
                       keyboardType:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      const TextInputType.numberWithOptions(decimal: true),
                       minLines: 1,
                       maxLines: 1,
                       maxLength: 10,
@@ -228,7 +272,7 @@ class _HomeState extends State<Home> {
                       style: const TextStyle(
                         fontSize: 16,
                       ),
-                      onEditingComplete: () => {},
+                      onEditingComplete: () => FocusScope.of(context).nextFocus(),
                     ),
                   ),
                   SizedBox(
@@ -241,7 +285,7 @@ class _HomeState extends State<Home> {
                             RegExp(r'^(\d+)?\.?\d{0,2}'))
                       ],
                       keyboardType:
-                          const TextInputType.numberWithOptions(decimal: true),
+                      const TextInputType.numberWithOptions(decimal: true),
                       minLines: 1,
                       maxLines: 1,
                       maxLength: 10,
@@ -255,7 +299,6 @@ class _HomeState extends State<Home> {
                       style: const TextStyle(
                         fontSize: 16,
                       ),
-                      onEditingComplete: () => {},
                     ),
                   ),
                 ],
@@ -272,13 +315,22 @@ class _HomeState extends State<Home> {
                     icon: const Icon(Icons.calculate_outlined),
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
-                      primary: Theme.of(context).colorScheme.secondary,
+                      primary: Theme
+                          .of(context)
+                          .colorScheme
+                          .secondary,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
                     onPressed: () {
-                      calcularResultado();
+                      if (checkErros()) {
+                        calcularResultado();
+                      } else{
+                        Fluttertoast.showToast(
+                          msg: "Valor Nulo ou Inválido",
+                        );
+                      }
                     },
                     //child:
                   ),
@@ -293,17 +345,7 @@ class _HomeState extends State<Home> {
                   contentPadding: const EdgeInsets.symmetric(horizontal: 5),
                   leading: const Icon(Icons.attach_money_outlined),
                   title: const Text('Poupança:'),
-                  trailing: Text("R\$ "+txtPoupanca,style: resultadoStyle),
-                ),
-              ),
-              Visibility(
-                visible: txtCDB.isNotEmpty,
-                child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 5),
-                  leading: const Icon(Icons.attach_money_outlined),
-                  title: const Text('CDB:'),
-                  trailing: Text("R\$ "+txtCDB,style: resultadoStyle),
-                  subtitle: Text(impRendaString),
+                  trailing: Text("R\$ " + txtPoupanca, style: resultadoStyle),
                 ),
               ),
               Visibility(
@@ -312,7 +354,18 @@ class _HomeState extends State<Home> {
                   contentPadding: const EdgeInsets.symmetric(horizontal: 5),
                   leading: const Icon(Icons.attach_money_outlined),
                   title: const Text('LCI / LCA:'),
-                  trailing: Text("R\$ "+txtLciLca,style: resultadoStyle),
+                  trailing: Text("R\$ " + txtLciLca, style: resultadoStyle),
+                ),
+              ),
+              Visibility(
+                visible: txtCDB.isNotEmpty,
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 5),
+                  leading: const Icon(Icons.attach_money_outlined),
+                  title: const Text('CDB:'),
+                  trailing: Text("R\$ " + txtCDB, style: resultadoStyle),
+                  subtitle: Text(impRendaString + "\nValor do Desconto R\$ " +
+                      valorDescCdb),
                 ),
               ),
             ],

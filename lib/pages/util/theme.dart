@@ -54,10 +54,10 @@ ThemeData light = ThemeData(
       selectedLabelStyle: TextStyle(color: Colors.green.shade700,),
       showSelectedLabels: false,
       showUnselectedLabels: false,
-      backgroundColor: const Color(0xFFE0E2E1),
+      backgroundColor: const Color(0xFFFFFFFF),
     ),
     navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: const Color(0xFFE0E2E1),
+        backgroundColor: const Color(0xFFFFFFFF),
         indicatorColor: Colors.green.shade700,
         iconTheme: MaterialStateProperty.all(
             const IconThemeData(color: Color(0xFF050505),)
@@ -73,9 +73,9 @@ ThemeData dark = ThemeData(
     primaryColor: const Color(0xFF202126),
     scaffoldBackgroundColor: const Color(0xFF202126),
     colorScheme: const ColorScheme.dark(
-      primary: Color(0xFF66BF72),
-      onSecondary: Color(0xFF66BF72),
-      secondary: Color(0xFF66BF72),
+      primary: Color(0xFF73BF66),
+      onSecondary: Color(0xFF73BF66),
+      secondary: Color(0xFF73BF66),
     ),
     appBarTheme: const AppBarTheme(
         color: Color(0xFF202126),
@@ -93,11 +93,11 @@ ThemeData dark = ThemeData(
     inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: const Color(0xFF303136),
-        focusColor: const Color(0xFF66BF72),
+        focusColor: const Color(0xFF73BF66),
         contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
         focusedBorder: OutlineInputBorder(
           borderSide: const BorderSide(
-            color: Color(0xFF66BF72),
+            color: Color(0xFF73BF66),
           ),
           borderRadius: BorderRadius.circular(10.0),
         ),
@@ -112,23 +112,23 @@ ThemeData dark = ThemeData(
             ),
             borderRadius: BorderRadius.circular(10.0))),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      selectedIconTheme: IconThemeData(color: Color(0xFF66BF72)),
-      selectedLabelStyle: TextStyle(color: Color(0xFF66BF72)),
+      selectedIconTheme: IconThemeData(color: Color(0xFF73BF66)),
+      selectedLabelStyle: TextStyle(color: Color(0xFF73BF66)),
       showSelectedLabels: false,
       showUnselectedLabels: false,
-      backgroundColor: Color(0xFF131419),
+      backgroundColor: Color(0xFF202126),
     ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       backgroundColor: Color(0xFF80DA8A),//353537
     ),
     navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: const Color(0xFF131419),
-        indicatorColor: const Color(0xFF66BF72),
+        backgroundColor: const Color(0xFF202126),
+        indicatorColor: const Color(0xFF73BF66),
         iconTheme: MaterialStateProperty.all(
             const IconThemeData(color: Color(0xFFEAEAEA),)
         ),
         labelTextStyle: MaterialStateProperty.all(const TextStyle(
             color: Color(0xFFEAEAEA), fontWeight: FontWeight.w500))),
-    bottomAppBarColor: const Color(0xFF131419),
+    bottomAppBarColor: const Color(0xFF202126),
     bottomSheetTheme:
     const BottomSheetThemeData(modalBackgroundColor: Color(0xFF202126)));
