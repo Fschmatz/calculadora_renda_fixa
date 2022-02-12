@@ -14,67 +14,67 @@ class _HomeState extends State<Home> {
   double txtFieldSpacing = 25;
   TextStyle labelStyle =
       const TextStyle(fontSize: 16, fontWeight: FontWeight.w600);
+  TextStyle resultadoStyle =
+    const TextStyle(fontSize: 15, fontWeight: FontWeight.w600);
   TextEditingController valor = TextEditingController();
   TextEditingController periodo = TextEditingController();
   TextEditingController taxaDi = TextEditingController();
-  TextEditingController taxaSelic = TextEditingController();
   TextEditingController cdb = TextEditingController();
   TextEditingController lciLca = TextEditingController();
 
-  String _resultado = '';
+  String txtPoupanca = '';
+  String txtCDB = '';
+  String txtLciLca = '';
+  String impRendaString = '';
 
   @override
   void initState() {
     valor.text = '10000';
     periodo.text = '12';
-    taxaDi.text = '10';
-    taxaSelic.text = '10';
-    cdb.text = '10';
-    lciLca.text = '10';
-
+    taxaDi.text = '10.65';
+    cdb.text = '100';
+    lciLca.text = '100';
     super.initState();
   }
 
   void calcularResultado() {
-    double selic = double.parse(taxaSelic.text);
-    double porcCDB = double.parse(cdb.text);
-    double porcLci = double.parse(lciLca.text);
+    loseFocus();
 
     double valorInicial = double.parse(valor.text);
     double periodoInv = double.parse(periodo.text);
-    double di = double.parse(taxaDi.text);
-
+    double porcCDB = double.parse(cdb.text);
+    double porcDi = double.parse(taxaDi.text);
+    double porcLci = double.parse(lciLca.text);
     double impRenda = 0;
-    bool ir = true;
 
-    if (periodoInv < 6) {
+    if (periodoInv <= 6) {
       impRenda = 22.5;
-    } else if (periodoInv < 12) {
+      impRendaString = "Imposto de Renda 22.5%";
+    } else if (periodoInv <= 12) {
       impRenda = 20;
-    } else if (periodoInv < 24) {
+      impRendaString = "Imposto de Renda 20%";
+    } else if (periodoInv <= 24) {
       impRenda = 17.5;
+      impRendaString = "Imposto de Renda 17.5%";
     } else {
       impRenda = 15;
+      impRendaString = "Imposto de Renda 15%";
     }
 
-    _resultado += "Poupança: " +
-        calcularPoupanca(valorInicial, periodoInv).toStringAsFixed(2) +
-        "\n";
-    _resultado += "LCI / LCA: " +
-        calcularLci(valorInicial, periodoInv, di, impRenda,porcLci).toStringAsFixed(2) +
-        "\n\n";
+    txtPoupanca = calcularPoupanca(valorInicial, periodoInv).toStringAsFixed(2);
+    txtCDB = calcularCdb(valorInicial, periodoInv, porcDi, porcCDB, impRenda)
+        .toStringAsFixed(2);
+
+    txtLciLca = calcularLciLca(valorInicial, periodoInv, porcDi, porcLci)
+        .toStringAsFixed(2);
 
     setState(() {
-      _resultado;
+      txtPoupanca;
+      txtCDB;
+      txtLciLca;
+      impRendaString;
     });
   }
-
-/*calcularImpostoRenda(){
-
-    double impRenda = 0;
-
-    var valorFinal = valorInicial + (valorFinal - valorInicial) / (1 - (faixaIr / 100));
-  }*/
 
   void loseFocus() {
     FocusScopeNode currentFocus = FocusScope.of(context);
@@ -93,6 +93,14 @@ class _HomeState extends State<Home> {
           appBar: AppBar(
             title: const Text('Calculadora Renda Fixa'),
             actions: [
+              IconButton(
+                  icon: const Icon(
+                    Icons.tune_outlined,
+                  ),
+                  onPressed: () {}),
+              const SizedBox(
+                width: 8,
+              ),
               IconButton(
                   icon: const Icon(
                     Icons.settings_outlined,
@@ -139,31 +147,6 @@ class _HomeState extends State<Home> {
               SizedBox(
                 height: txtFieldSpacing,
               ),
-              TextField(
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.allow(
-                      RegExp(r'^(\d+)?\.?\d{0,2}'))
-                ],
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
-                minLines: 1,
-                maxLines: 1,
-                maxLength: 10,
-                maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                controller: periodo,
-                decoration: const InputDecoration(
-                  labelText: "Período (Meses)",
-                  counterText: "",
-                ),
-                textAlign: TextAlign.end,
-                style: const TextStyle(
-                  fontSize: 16,
-                ),
-                onEditingComplete: () => {},
-              ),
-              SizedBox(
-                height: txtFieldSpacing,
-              ),
               Row(
                 children: [
                   Flexible(
@@ -178,9 +161,9 @@ class _HomeState extends State<Home> {
                       maxLines: 1,
                       maxLength: 10,
                       maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                      controller: taxaDi,
+                      controller: periodo,
                       decoration: const InputDecoration(
-                        labelText: "DI - % ao Ano",
+                        labelText: "Período (Meses)",
                         counterText: "",
                       ),
                       textAlign: TextAlign.end,
@@ -205,9 +188,9 @@ class _HomeState extends State<Home> {
                       maxLines: 1,
                       maxLength: 10,
                       maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                      controller: taxaSelic,
+                      controller: taxaDi,
                       decoration: const InputDecoration(
-                        labelText: "Selic - % ao Ano",
+                        labelText: "DI - % ao Ano",
                         counterText: "",
                       ),
                       textAlign: TextAlign.end,
@@ -238,7 +221,7 @@ class _HomeState extends State<Home> {
                       maxLengthEnforcement: MaxLengthEnforcement.enforced,
                       controller: cdb,
                       decoration: const InputDecoration(
-                        labelText: "% CDB / LC",
+                        labelText: "% CDB",
                         counterText: "",
                       ),
                       textAlign: TextAlign.end,
@@ -304,7 +287,34 @@ class _HomeState extends State<Home> {
               const SizedBox(
                 height: 30,
               ),
-              Text(_resultado),
+              Visibility(
+                visible: txtPoupanca.isNotEmpty,
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 5),
+                  leading: const Icon(Icons.attach_money_outlined),
+                  title: const Text('Poupança:'),
+                  trailing: Text("R\$ "+txtPoupanca,style: resultadoStyle),
+                ),
+              ),
+              Visibility(
+                visible: txtCDB.isNotEmpty,
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 5),
+                  leading: const Icon(Icons.attach_money_outlined),
+                  title: const Text('CDB:'),
+                  trailing: Text("R\$ "+txtCDB,style: resultadoStyle),
+                  subtitle: Text(impRendaString),
+                ),
+              ),
+              Visibility(
+                visible: txtLciLca.isNotEmpty,
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 5),
+                  leading: const Icon(Icons.attach_money_outlined),
+                  title: const Text('LCI / LCA:'),
+                  trailing: Text("R\$ "+txtLciLca,style: resultadoStyle),
+                ),
+              ),
             ],
           )),
     );

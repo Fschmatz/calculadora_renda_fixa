@@ -1,30 +1,30 @@
 import 'dart:math' as math;
 
+double calcularJurosCompostos(
+    double valorAplic, double periodo, double porcentagem) {
+  return valorAplic * (math.pow(porcentagem, periodo)) - valorAplic;
+}
+
 double calcularPoupanca(double valorAplic, double periodo) {
-  return valorAplic * (math.pow(0.5 / 100 + 1, periodo)) - valorAplic;
+  return calcularJurosCompostos(valorAplic, periodo, 0.5 / 100 + 1);
 }
 
-num calcularLci(double valorAplic, double periodo, double di, double impRenda,
-    double porcLci) {
+double calcularCdb(double valorAplic, double periodo, double porcDi,  double porcCdb, double impRenda) {
 
+  double calcCdb = double.parse(math.pow(((porcCdb / 100 * porcDi) / 100 + 1), (1 / 12)).toString());
 
-  print ("valor sem desconto "+(valorAplic * (math.pow(di / periodo , periodo)) - valorAplic).toString());
+  double valorSemDescontos = calcularJurosCompostos(valorAplic, periodo, calcCdb );
+  double valorComDesconto = valorSemDescontos - (valorSemDescontos * (impRenda / 100));
 
-//Math.pow(((porcLci / 100 * di) / 100 + 1), (1 / 12));
-
-  double taxa = impRenda / 100;
-  num v = math.pow(( di / 100 + 1), periodo);
-
-  //print("v -> " + v.toString());
-  //print("v desc -> "+(v - (v * impRenda / 100)).toString());*/
-
-  return 1; //800
+  return valorComDesconto;
 }
 
-double calcularCdb(double valorAplic, double periodo) {
-  return 1;
+double calcularLciLca(double valorAplic, double periodo, double porcDi, double porcLci) {
+
+  double calcRend = double.parse(math.pow(((porcLci / 100 * porcDi) / 100 + 1), (1 / 12)).toString());
+
+  double valor = calcularJurosCompostos(valorAplic, periodo, calcRend );
+
+  return valor;
 }
 
-double calcularTesouro(double valorAplic, double periodo) {
-  return 1;
-}

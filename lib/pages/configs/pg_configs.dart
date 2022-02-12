@@ -5,9 +5,7 @@ import '../util/changelog.dart';
 import '../util/dialog_select_theme.dart';
 import '../util/utils_functions.dart';
 
-
 class PgConfigs extends StatefulWidget {
-
   @override
   _PgConfigsState createState() => _PgConfigsState();
 
@@ -17,14 +15,16 @@ class PgConfigs extends StatefulWidget {
 }
 
 class _PgConfigsState extends State<PgConfigs> {
-
-  String getThemeStringFormatted(){
-    String theme =  EasyDynamicTheme.of(context).themeMode.toString().replaceAll('ThemeMode.', '');
-    if(theme == 'system'){
+  String getThemeStringFormatted() {
+    String theme = EasyDynamicTheme.of(context)
+        .themeMode
+        .toString()
+        .replaceAll('ThemeMode.', '');
+    if (theme == 'system') {
       theme = 'padrão do sistema';
-    }else if (theme == 'light'){
+    } else if (theme == 'light') {
       theme = 'claro';
-    }else {
+    } else {
       theme = 'escuro';
     }
     return capitalizeFirstLetterString(theme);
@@ -37,7 +37,6 @@ class _PgConfigsState extends State<PgConfigs> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         appBar: AppBar(
           title: const Text("Configurações"),
@@ -58,28 +57,6 @@ class _PgConfigsState extends State<PgConfigs> {
                   style: const TextStyle(fontSize: 17.5, color: Colors.black),
                 ),
               ),
-            ),
-            const Divider(),
-            ListTile(
-              leading: const SizedBox(
-                height: 0.1,
-              ),
-              title: Text("Código Fonte".toUpperCase(),
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: Theme.of(context).colorScheme.primary,
-                  )),
-            ),
-            ListTile(
-              onTap: () {
-                _launchGithub();
-              },
-              leading: const Icon(Icons.open_in_new_outlined),
-              title: const Text("Ver no Github",
-                  style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      color: Colors.blue)),
             ),
             const Divider(),
             ListTile(
@@ -112,6 +89,28 @@ class _PgConfigsState extends State<PgConfigs> {
               leading: const SizedBox(
                 height: 0.1,
               ),
+              title: Text("Código Fonte".toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: Theme.of(context).colorScheme.primary,
+                  )),
+            ),
+            ListTile(
+              onTap: () {
+                _launchGithub();
+              },
+              leading: const Icon(Icons.open_in_new_outlined),
+              title: const Text("Ver no Github",
+                  style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      color: Colors.blue)),
+            ),
+            const Divider(),
+            ListTile(
+              leading: const SizedBox(
+                height: 0.1,
+              ),
               title: Text("Changelog".toUpperCase(),
                   style: TextStyle(
                     fontSize: 13,
@@ -120,15 +119,14 @@ class _PgConfigsState extends State<PgConfigs> {
                   )),
             ),
             ListTile(
-              leading: const SizedBox(
-                height: 0.1,
+              leading: const Icon(
+                Icons.article_outlined,
               ),
               title: Text(
                 Changelog.changelogs,
                 style: const TextStyle(fontSize: 16),
               ),
             ),
-
           ],
         ));
   }
