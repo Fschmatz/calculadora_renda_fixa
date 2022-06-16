@@ -31,8 +31,10 @@ class _PgConfigsState extends State<PgConfigs> {
   }
 
   _launchGithub() {
-    const url = 'https://github.com/Fschmatz/calculadora_renda_fixa';
-    launch(url);
+    launchUrl(
+      Uri.parse('https://github.com/Fschmatz/calculadora_renda_fixa'),
+      mode: LaunchMode.externalApplication,
+    );
   }
 
   @override
@@ -58,15 +60,11 @@ class _PgConfigsState extends State<PgConfigs> {
                 ),
               ),
             ),
-            const Divider(),
             ListTile(
-              leading: const SizedBox(
-                height: 0.1,
-              ),
-              title: Text("Geral".toUpperCase(),
+              title: Text("Geral",
                   style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
                       color: Theme.of(context).colorScheme.primary)),
             ),
             ListTile(
@@ -78,21 +76,16 @@ class _PgConfigsState extends State<PgConfigs> {
               leading: const Icon(Icons.brightness_6_outlined),
               title: const Text(
                 "Tema do aplicativo",
-                style: TextStyle(fontSize: 16),
               ),
               subtitle: Text(
                 getThemeStringFormatted(),
               ),
             ),
-            const Divider(),
             ListTile(
-              leading: const SizedBox(
-                height: 0.1,
-              ),
-              title: Text("Código Fonte".toUpperCase(),
+              title: Text("Código Fonte",
                   style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
                     color: Theme.of(context).colorScheme.primary,
                   )),
             ),
@@ -106,15 +99,11 @@ class _PgConfigsState extends State<PgConfigs> {
                       decoration: TextDecoration.underline,
                       color: Colors.blue)),
             ),
-            const Divider(),
             ListTile(
-              leading: const SizedBox(
-                height: 0.1,
-              ),
-              title: Text("Changelog".toUpperCase(),
+              title: Text("Changelog",
                   style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
                     color: Theme.of(context).colorScheme.primary,
                   )),
             ),
@@ -124,7 +113,6 @@ class _PgConfigsState extends State<PgConfigs> {
               ),
               title: Text(
                 Changelog.changelogs,
-                style: const TextStyle(fontSize: 16),
               ),
             ),
           ],
